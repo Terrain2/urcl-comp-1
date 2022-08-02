@@ -1,0 +1,116 @@
+bits 16
+minheap 0
+minstack 200
+
+.clear [ "\x1b[2J" 0 ]
+
+.board [
+    "    1   2   3  \n"
+    "  +---+---+---+\n"
+    "A | ! | ! | ! |\n"
+    "  +---+---+---+\n"
+    "B | ! | ! | ! |\n"
+    "  +---+---+---+\n"
+    "C | ! | ! | ! |\n"
+    "  +---+---+---+\n"
+    0
+]
+
+.poses [
+    [ 0 0 0 ]
+    [ 0 0 0 ]
+    [ 0 0 0 ]
+]
+
+// i am allowed to use the internal syntax. i need it for this, because of size limitations.
+__binary__ add.load -> LLOD;
+inst add.store <&base> <&offset> <&value> {
+    LSTR &base &offset &value;
+}
+
+func $main {
+    const .board
+    call $print_string
+    call $setup_poses
+    
+    const 0
+    label :loop
+        dup
+        const 9
+        gte branch :loop_end
+    const .poses over
+    add.load
+    dup out %INT
+    const '\n'
+    out %TEXT
+    over const '0' add
+    store
+    inc
+    jump :loop
+    height 1
+    label :loop_end
+    pop
+
+    const .clear
+    call $print_string
+    const .board
+    call $print_string
+}
+
+inst __pose__ <&poses> <&i> <&offset> {
+    ADD &addr .board &offset
+    LSTR &poses &i &addr
+}
+
+func $setup_poses {
+    const .poses
+    dup dup dup dup
+    dup dup dup dup
+    // 32 * 1 + 4 * 1 = 36
+    const 0 const 36
+    __pose__
+    // 32 * 1 + 4 * 2 = 40
+    const 1 const 40
+    __pose__
+    // 32 * 1 + 4 * 3 = 44
+    const 2 const 44
+    __pose__
+
+    // 32 * 2 + 4 * 1 = 68
+    const 3 const 68
+    __pose__
+    // 32 * 2 + 4 * 2 = 72
+    const 4 const 72
+    __pose__
+    // 32 * 2 + 4 * 3 = 76
+    const 5 const 76
+    __pose__
+
+    // 32 * 3 + 4 * 1 = 100
+    const 6 const 100
+    __pose__
+    // 32 * 3 + 4 * 2 = 104
+    const 7 const 104
+    __pose__
+    // 32 * 3 + 4 * 3 = 108
+    const 8 const 108
+    __pose__
+}
+
+func $print_string 1 -> 0 {
+    get 0
+
+    label :loop
+        dup
+        load
+            dup
+            const 0
+            eq branch :exit
+        out %TEXT
+    inc
+    jump :loop
+
+    height 2
+    label :exit
+    pop pop
+}

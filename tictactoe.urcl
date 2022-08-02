@@ -1,0 +1,70 @@
+BITS 16
+MINHEAP 0
+MINSTACK 200
+MINREG 3
+CAL .URSL_func_main
+HLT
+.URSL_data_clear
+DW [ 27 91 50 74 0 ]
+.URSL_data_board
+DW [ 32 32 32 32 49 32 32 32 50 32 32 32 51 32 32 10 32 32 43 45 45 45 43 45 45 45 43 45 45 45 43 10 65 32 124 32 33 32 124 32 33 32 124 32 33 32 124 10 32 32 43 45 45 45 43 45 45 45 43 45 45 45 43 10 66 32 124 32 33 32 124 32 33 32 124 32 33 32 124 10 32 32 43 45 45 45 43 45 45 45 43 45 45 45 43 10 67 32 124 32 33 32 124 32 33 32 124 32 33 32 124 10 32 32 43 45 45 45 43 45 45 45 43 45 45 45 43 10 0 ]
+.URSL_data_poses
+DW [ 0 0 0 0 0 0 0 0 0 ]
+
+.URSL_func_main
+PSH .URSL_data_board
+CAL .URSL_func_print__string
+ADD SP SP 1
+CAL .URSL_func_setup__poses
+IMM $1 0
+.URSL_func_main_label_loop
+BGE .URSL_func_main_label_loop__end $1 9
+LLOD $2 .URSL_data_poses $1
+OUT %INT $2
+OUT %TEXT 10
+ADD $3 $1 48
+STR $2 $3
+INC $2 $1
+MOV $1 $2
+JMP .URSL_func_main_label_loop
+.URSL_func_main_label_loop__end
+PSH .URSL_data_clear
+CAL .URSL_func_print__string
+ADD SP SP 1
+PSH .URSL_data_board
+CAL .URSL_func_print__string
+ADD SP SP 1
+RET
+
+.URSL_func_print__string
+LLOD $1 SP 1
+.URSL_func_print__string_label_loop
+LOD $2 $1
+BRE .URSL_func_print__string_label_exit $2 0
+OUT %TEXT $2
+INC $2 $1
+MOV $1 $2
+JMP .URSL_func_print__string_label_loop
+.URSL_func_print__string_label_exit
+RET
+
+.URSL_func_setup__poses
+ADD $1 .URSL_data_board 36
+LSTR .URSL_data_poses 0 $1
+ADD $1 .URSL_data_board 40
+LSTR .URSL_data_poses 1 $1
+ADD $1 .URSL_data_board 44
+LSTR .URSL_data_poses 2 $1
+ADD $1 .URSL_data_board 68
+LSTR .URSL_data_poses 3 $1
+ADD $1 .URSL_data_board 72
+LSTR .URSL_data_poses 4 $1
+ADD $1 .URSL_data_board 76
+LSTR .URSL_data_poses 5 $1
+ADD $1 .URSL_data_board 100
+LSTR .URSL_data_poses 6 $1
+ADD $1 .URSL_data_board 104
+LSTR .URSL_data_poses 7 $1
+ADD $1 .URSL_data_board 108
+LSTR .URSL_data_poses 8 $1
+RET
